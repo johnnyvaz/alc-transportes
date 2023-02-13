@@ -1,22 +1,22 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import type { Note } from "~/models/note.server";
-import { getNoteListItems } from "~/models/note.server";
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
+import type {Setting} from "~/models/settings.server";
+import { getSettingsListItems} from "~/models/settings.server";
 
 type LoaderData = {
-  noteListItems: Note[];
+  settingsListItems: Setting[];
 };
 
 export async function loader ({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
-  const noteListItems = await getNoteListItems({ userId });
-  return json({ noteListItems });
-};
+  const settingsListItems = await getSettingsListItems({ userId });
+  return json({ settingsListItems });
+}
 
-export default function NotesPage() {
+export default function SettingsPage() {
   const data = useLoaderData<typeof loader>() as LoaderData;
 
   return (
@@ -25,24 +25,24 @@ export default function NotesPage() {
       <main className="flex h-full bg-white">
         <div className="h-full w-80 border-r bg-gray-50">
           <Link to="new" className="block p-4 text-xl text-blue-500">
-            + New Note
+            + Adicionar Impressora
           </Link>
 
           <hr />
 
-          {data.noteListItems.length === 0 ? (
-            <p className="p-4">No notes yet</p>
+          {data.settingsListItems.length === 0 ? (
+            <p className="p-4">Sem configurações</p>
           ) : (
             <ol>
-              {data.noteListItems.map((note) => (
-                <li key={note.id}>
+              {data.settingsListItems.map((setting) => (
+                <li key={setting.id}>
                   <NavLink
                     className={({ isActive }) =>
                       `block border-b p-4 text-xl ${isActive ? "bg-white" : ""}`
                     }
-                    to={note.id}
+                    to={setting.id}
                   >
-                    📝 {note.title}
+                    📝 {setting.name}
                   </NavLink>
                 </li>
               ))}
@@ -57,16 +57,13 @@ export default function NotesPage() {
     </div>
   );
 }
-
+// profile_id -> public.profiles.id
 function Header() {
   const user = useUser();
   return (
     <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
       <h1 className="text-3xl font-bold">
-        <Link to=".">Notes</Link>
-      </h1>
-      <h1 className="text-3xl font-bold">
-        <Link to="/settings">Settings</Link>
+        <Link to=".">Configurações</Link>
       </h1>
       <p>{user.email}</p>
       <Form action="/logout" method="post">
