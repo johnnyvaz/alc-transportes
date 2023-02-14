@@ -10,17 +10,18 @@ export default function Index() {
           <div className="relative shadow-xl sm:overflow-hidden sm:rounded-2xl">
             <div className="absolute inset-0">
 
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 mix-blend-multiply" />
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500
+              via-purple-500 to-pink-500 mix-blend-multiply" />
 
             </div>
             <div className="lg:pb-18 relative px-4 pt-16 pb-8 sm:px-6 sm:pt-24 sm:pb-14 lg:px-8 lg:pt-32">
               <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-6xl lg:text-6xl">
-                <span className="block uppercase text-black-500 drop-shadow-md backdrop-contrast-50">
+                <span className="block uppercase text-black-500 shadow-lg shadow-black-500/40">
                   Cod2d Transportadoras
                 </span>
               </h1>
-              <p className="mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl">
-                Verifique a pagina docs para mais instruções.
+              <p className="mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl shadow-lg shadow-black-500/40">
+                Gestão de Impressão de Códigos de Rotas
               </p>
               <div className="mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center">
                 {user ? (

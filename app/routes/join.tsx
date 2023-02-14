@@ -27,7 +27,7 @@ export async function loader({ request }: LoaderArgs) {
   const userId = await getUserId(request);
   if (userId) return redirect("/");
   return json({});
-};
+}
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
@@ -98,12 +98,16 @@ export default function Join() {
   }, [actionData]);
 
   return (
-    <div className="flex min-h-full flex-col justify-center">
-      <div className="mx-auto w-full max-w-md px-8">
+    <div className="flex min-h-full flex-col justify-center bg-gradient-to-r from-indigo-500
+              via-purple-500 to-pink-500">
+      <div className="p-8 mx-auto w-full max-w-md px-8 shadow-2xl outline outline-offset-2 outline-1 bg-white">
         <Form className="space-y-6" method="post" noValidate>
           <div>
+            <h1 className="text-center text-2xl">
+              Cadastre-se
+            </h1>
             <label className="text-sm font-medium" htmlFor="email">
-              <span className="block text-gray-700">Email Address</span>
+              <span className="block text-gray-700">Email</span>
               {actionData?.errors?.email && (
                 <span className="block pt-1 text-red-700" id="email-error">
                   {actionData?.errors?.email}
@@ -123,9 +127,9 @@ export default function Join() {
           </div>
           <div>
             <label className="text-sm font-medium" htmlFor="password">
-              <span className="block text-gray-700">Password</span>
+              <span className="block text-gray-700">Senha</span>
               <span className="block font-light text-gray-700">
-                Must have at least 6 characters.
+                Deve ter pelo menos 6 caracteres.
               </span>
               {actionData?.errors?.password && (
                 <span className="pt-1 text-red-700" id="password-error">
@@ -148,12 +152,12 @@ export default function Join() {
             className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
             type="submit"
           >
-            Create Account
+            Criar Conta
           </button>
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <div className="flex items-center justify-center">
             <div className="text-center text-sm text-gray-500">
-              Already have an account?{" "}
+              Já term um cadastro?{" "}
               <Link
                 className="text-blue-500 underline"
                 to={{
@@ -161,7 +165,7 @@ export default function Join() {
                   search: searchParams.toString(),
                 }}
               >
-                Log in
+                Acessar
               </Link>
             </div>
           </div>
