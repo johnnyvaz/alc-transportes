@@ -5,7 +5,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import { Form, useActionData, useSearchParams } from "@remix-run/react";
 import { verifyLogin } from "~/models/user.server";
 import { createUserSession, getUserId } from "~/session.server";
 import { validateEmail } from "~/utils";
@@ -67,13 +67,13 @@ export const action: ActionFunction = async ({ request }) => {
     request,
     userId: user.id,
     remember: remember === "on" ? true : false,
-    redirectTo: typeof redirectTo === "string" ? redirectTo : "/settings",
+    redirectTo: typeof redirectTo === "string" ? redirectTo : "/readBarcode",
   });
 };
 
 export default function Login() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") ?? "/settings";
+  const redirectTo = searchParams.get("redirectTo") ?? "/readBarcode";
 
   const actionData = useActionData() as ActionData;
   const emailRef = React.useRef<HTMLInputElement>(null);
@@ -161,15 +161,6 @@ export default function Login() {
               >
                 Lembrar
               </label>
-            </div>
-            <div className="text-center text-sm text-gray-500">
-              Não tem uma conta?{" "}
-              <Link
-                className="text-blue-500 underline"
-                to={{ pathname: "/join" }}
-              >
-                Cadastre-se
-              </Link>
             </div>
           </div>
         </Form>

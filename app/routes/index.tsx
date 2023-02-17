@@ -27,7 +27,7 @@ export default function Index() {
                 {user ? (
                   <div>
                     <Link
-                      to="/settings"
+                      to="/readBarcode"
                       className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-violet-700 shadow-sm hover:bg-violet-50 sm:px-8"
                     >
                       Usuário Logado: {user.email}
@@ -35,15 +35,15 @@ export default function Index() {
                   </div>
                 ) : (
                   <div className="space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0">
-                    <Link
-                      to="/join"
-                      className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-violet-700 shadow-sm hover:bg-violet-50 sm:px-8"
-                    >
-                      Desconectar
-                    </Link>
+                    {/*<Link*/}
+                    {/*  to="/join"*/}
+                    {/*  className="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-violet-700 shadow-sm hover:bg-violet-50 sm:px-8"*/}
+                    {/*>*/}
+                    {/*  Desconectar*/}
+                    {/*</Link>*/}
                     <Link
                       to="/login"
-                      className="flex items-center justify-center rounded-md bg-violet-500 px-4 py-3 font-medium text-white hover:bg-violet-600  "
+                      className="flex items-center justify-center rounded-md bg-violet-900 px-4 py-3 font-medium text-white hover:bg-violet-700  "
                     >
                       Acessar
                     </Link>
