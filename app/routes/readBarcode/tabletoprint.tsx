@@ -11,7 +11,7 @@ export default function TableToPrint() {
       <div className="container p-2">
         <div className="bg-gray-800 text-white text-center justify-center resize p-4 rounded-t-lg
           uppercase">
-          Relação de etiquetas impressas
+          Etiquetas para imprimir
         </div>
         <div className="border border-gray-400"></div>
         <table className="table-fixed text-center bg-white overflow-hidden">
