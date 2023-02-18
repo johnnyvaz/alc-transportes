@@ -5,7 +5,7 @@ export type ResultPrinters = {
 }
 
 const headers = {
-  // Authorization: `Bearer ${process.env.UPSTASH_REDIS_REST_TOKEN}`,
+  Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0.PpZp5F3LEyPgjZRDOkDWaxDTBmHXijCqt-Sd-vcVo3s",
   Accept: "application/json",
   "Content-Type": "application/json",
 };
@@ -19,6 +19,24 @@ export async function getPrinter(host?: string) {
   if (!error) {
     return printer;
   }
-
   return null;
+}
+
+export async function postPrinter(host?: string, name?: string, body?: string) {
+  const postbody = {
+    printerIdentifier: name,
+    zpl: body
+  }
+  const response = await fetch(`http://${host}:5010/api/printer/zpl/`,
+    {
+      method: "post",
+      body: JSON.stringify(postbody),
+      headers: headers
+    }
+    ).then((res) => res.json());
+  // if (!error) {
+  console.log("response " + JSON.stringify(response));
+    return response;
+  // }
+  // return null;
 }

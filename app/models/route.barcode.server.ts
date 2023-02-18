@@ -16,6 +16,7 @@ export type Route = {
 export type LoaderData = {
   routeListItems: Route[];
   routePrintedListItems: Route[];
+  routeSelected: Route;
 };
 
 export async function getRouteListItems({ userId }: { userId: User["id"] }) {
@@ -51,10 +52,8 @@ export async function createRoute({
   return null;
 }
 
-export async function getRoute({
-  orderid,
-  userId,
-}: Pick<Route, "orderid"> & { userId: User["id"] }) {
+export async function getRoute(orderid? : Route["orderid"], userId?: User["id"]) {
+  console.log("orderid 333" + orderid);
   const { data, error } = await supabase
     .from("routes")
     .select("*")
@@ -72,6 +71,5 @@ export async function getRoute({
       printed: data.printed
     };
   }
-
   return null;
 }

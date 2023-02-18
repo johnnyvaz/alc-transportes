@@ -5,6 +5,7 @@ export type Setting = {
   id: string;
   name: string;
   address: string;
+  default: boolean;
   profile_id: string;
 };
 
@@ -50,20 +51,16 @@ export async function deleteConfigPrinter({
   return null;
 }
 
-export async function getConfigPrinter({
-  id,
-  userId,
-}: Pick<Setting, "id"> & { userId: User["id"] }) {
+export async function getConfigPrinter(userId: User["id"]) {
   const { data, error } = await supabase
     .from("settings")
     .select("*")
     .eq("profile_id", userId)
-    .eq("id", id)
+    .eq("default", true)
     .single();
-
+  console.log("configuração da impressora" + JSON.stringify(data));
   if (!error) {
     return {
-      userId: data.profile_id,
       id: data.id,
       name: data.name,
       address: data.address,
