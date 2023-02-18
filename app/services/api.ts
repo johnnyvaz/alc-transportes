@@ -27,7 +27,7 @@ export async function postPrinter(host?: string, name?: string, body?: string) {
     printerIdentifier: name,
     zpl: body
   }
-  const response = await fetch(`http://${host}:5010/api/printer/zpl/`,
+  const response = await fetch(`${host}:5010/api/printer/zpl/`,
     {
       method: "post",
       body: JSON.stringify(postbody),
