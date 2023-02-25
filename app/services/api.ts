@@ -8,11 +8,12 @@ export type ResultPrinters = {
 const headers = {
   Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0.PpZp5F3LEyPgjZRDOkDWaxDTBmHXijCqt-Sd-vcVo3s",
   Accept: "application/json",
+  "ngrok-skip-browser-warning": "cod2d",
   "Content-Type": "application/json",
 };
 export async function getPrinter(host?: string) {
   invariant(host, "Selecione um host válido");
-  const { printer, error } = await fetch(`${host}:5010/api/printers`,
+  const { printer, error } = await fetch(`https://${host}:5010/api/printers`,
     { method: "get", headers: headers }
   ).then((res) => res.json()
   );
@@ -33,7 +34,7 @@ export async function postPrinter(host?: string | undefined, name?: string | und
     },
     printerIdentifier: name
   }
-  const { response, error } = await fetch(`${host}:5010/api/printer/routes/`,
+  const { response, error } = await fetch(`https://${host}:5010/api/printer/routes/`,
     {
       method: "post",
       body: JSON.stringify(postApiPrinter),
