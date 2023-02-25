@@ -1,4 +1,5 @@
 import invariant from "tiny-invariant";
+import type { Route } from "~/models/route.barcode.server";
 
 export type ResultPrinters = {
   printers: []
@@ -11,7 +12,7 @@ const headers = {
 };
 export async function getPrinter(host?: string) {
   invariant(host, "Selecione um host válido");
-  const { printer, error } = await fetch(`http://${host}:5010/api/printers`,
+  const { printer, error } = await fetch(`${host}:5010/api/printers`,
     { method: "get", headers: headers }
   ).then((res) => res.json()
   );
@@ -22,21 +23,48 @@ export async function getPrinter(host?: string) {
   return null;
 }
 
-export async function postPrinter(host?: string, name?: string, body?: string) {
-  const postbody = {
-    printerIdentifier: name,
-    zpl: body
+export async function postPrinter(host?: string | undefined, name?: string | undefined, route?: Route | null) {
+
+  const postApiPrinter = {
+    tagContent: {
+      route: route?.route,
+      stop: route?.stop,
+      orderid: route?.orderid
+    },
+    printerIdentifier: name
   }
-  const response = await fetch(`${host}:5010/api/printer/zpl/`,
+  const { response, error } = await fetch(`${host}:5010/api/printer/routes/`,
     {
       method: "post",
-      body: JSON.stringify(postbody),
+      body: JSON.stringify(postApiPrinter),
       headers: headers
     }
     ).then((res) => res.json());
-  // if (!error) {
-  console.log("response " + JSON.stringify(response));
+  if (!error) {
+  console.log("response postPrinter" + JSON.stringify(response));
     return response;
-  // }
-  // return null;
+  }
+  return null;
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function getPrinterSelected(host?: string, name?: string) {
+  invariant(host, "Selecione um host válido");
+  const printResponse = await fetch(`${host}:5010/api/printers/${name}`,
+    { method: "get", headers: headers }
+  ).then((res) => { delay(15000);
+    if (res.ok) {
+      console.log("printResponse" + printResponse)
+      return true
+    } else {
+      console.log('Network response was not ok.');
+      return false
+    }
+  }).catch(function(error) {
+      console.log('Erro com o fetch operation: ' + error.message);
+      return false
+    });
 }

@@ -1,43 +1,59 @@
 import type { ActionArgs } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Outlet, useActionData } from "@remix-run/react";
+import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import TableToPrint from "~/component/tabletoprint";
 import TablePrinted from "~/component/tableprinted";
 import { requireUserId } from "~/session.server";
-import { getRoute, getRouteListItems, getRoutePrintedListItems } from "~/models/route.barcode.server";
+import {
+  getRoute,
+  getRouteListItems,
+  getRoutePrintedListItems,
+  Route,
+  setRoutePrinted
+} from "~/models/route.barcode.server";
 import Header from "~/component/header";
-import { getConfigPrinter } from "~/models/settings.server";
-import type { Setting } from "~/models/settings.server";
 import { postPrinter } from "~/services/api";
+import { getConfigPrinter, Setting } from "~/models/settings.server";
 
+type LoaderData = {
+  route: Route;
+  setting: Setting
+}
 
 export const action = async ({ request }: ActionArgs) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const orderid = formData.get("orderid");
   const route = await getRoute(orderid, userId);
-  const setting: Setting = await getConfigPrinter(userId);
-  const printer = await postPrinter(setting.address, setting.name, typeof route)
-  console.log(" foi pra impressora" + printer);
+  const setting = await getConfigPrinter(userId);
+  await postPrinter(setting?.address, setting?.name, route)
+  await setRoutePrinted(route?.id)
+
   return json(route);
 };
 
 export async function loader({ request }: LoaderArgs) {
   const userId = await requireUserId(request);
+  const setting = await getConfigPrinter(userId);
   const routeListItems = await getRouteListItems({ userId });
   const routePrintedListItems = await getRoutePrintedListItems({ userId });
-  return json({ routeListItems, routePrintedListItems });
+  return json({ routeListItems, routePrintedListItems, setting });
 }
 
-export default function SearchInput() {
+export default function ReadBarcode() {
+  const data = useLoaderData<LoaderData>();
   const actionMessage = useActionData<typeof action>();
   const orderidRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (actionMessage && orderidRef.current) {
       orderidRef.current.select();
+      setTimeout(() => {
+        orderidRef.current.value = "";
+      }, 2000)
     }
+
   }, [actionMessage]);
 
 return (
@@ -80,10 +96,10 @@ return (
                     Imprimir
                   </button>
                 </div>
+                <br/>
                 <div>
                   <label className="flex w-full flex-col gap-1">
                       <h3 className="text-2xl font-medium text-white text-center">Etiqueta enviada para impressão</h3>
-
                     {actionMessage ? (
                       <div className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6">
                         <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
@@ -92,7 +108,6 @@ return (
                             <th className="px-4 py-2">Pedido</th>
                             <th className="px-4 py-2">Rota</th>
                             <th className="px-4 py-2">Parada</th>
-                            <th className="px-4 py-2">Impresso?</th>
                           </tr>
                           </thead>
                           <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
@@ -100,7 +115,6 @@ return (
                               <td className="px-4 py-2">{actionMessage.orderid}</td>
                               <td className="px-4 py-2">{actionMessage.route}</td>
                               <td className="px-4 py-2">{actionMessage.stop}</td>
-                              <td className="px-4 py-2">{actionMessage.printed ? "sim" : "não" }</td>
                             </tr>
                           </tbody>
                         </table>
@@ -111,17 +125,13 @@ return (
                         <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
                           <thead>
                           <tr className="bg-gray-800 text-white w-full flex-2">
-                            <th className="px-4 py-2 ">ID</th>
                             <th className="px-4 py-2">Pedido</th>
                             <th className="px-4 py-2">Rota</th>
                             <th className="px-4 py-2">Parada</th>
-                            <th className="px-4 py-2">Impresso?</th>
                           </tr>
                           </thead>
                           <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
                           <tr key="">
-                            <td className="px-4 py-2 ">-</td>
-                            <td className="px-4 py-2">-</td>
                             <td className="px-4 py-2">-</td>
                             <td className="px-4 py-2">-</td>
                             <td className="px-4 py-2">-</td>
@@ -147,3 +157,5 @@ return (
   </main>
 );
 }
+
+

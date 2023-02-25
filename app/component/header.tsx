@@ -1,8 +1,12 @@
 import { useUser } from "~/utils";
 import { Form, Link } from "@remix-run/react";
+import React from "react";
+
+
 
 export default function Header() {
   const user = useUser();
+
   return (
     <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
       <div className="text-2xl ">
@@ -19,4 +23,10 @@ export default function Header() {
       </Form>
     </header>
   );
+}
+
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+  return <div>Opa, deu ruim. </div>;
 }

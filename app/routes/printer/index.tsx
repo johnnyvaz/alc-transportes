@@ -1,34 +1,47 @@
-import { json } from "@remix-run/node";
-import React from "react";
-import { useLoaderData } from "@remix-run/react";
-import { getPrinter } from "~/services/api";
+import { defer } from "@remix-run/node";
+import { Suspense } from "react";
+import { Await, useLoaderData } from "@remix-run/react";
+import type { PrinterStatus } from "~/types";
 
-export const loader = async () => {
-	const host = "http://192.168.1.2";
-	const result = json(
-		await getPrinter(host)
-	)
-	console.log("result 2" + {result})
-	return result;
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export default function GetPrinter() {
-	const data = useLoaderData<typeof loader>();
-	return (
-		<div className="relative w-full lg:max-w-sm">
-			<select className="w-full p-2.5 text-gray-500 bg-white border rounded-md
-			shadow-sm outline-none appearance-none focus:border-indigo-600">
-				<option>Vazio</option>
-				{data.map((printer:any) => (
-					<option key={printer}>{printer}</option>
-				))}
-			</select>
-		</div>
+export async function loader() {
+  const host = "http://192.168.1.2";
+  const name = "DeskJet-5200"
+  const checkprinter: Promise<PrinterStatus> = fetch(
+    `${host}:5010/api/printers/${name}`
+  )
+    .then((res) => delay(15000)
+    .then(() => res.json()))
 
-	);
+  return defer({
+    checkprinter
+  });
 }
+export default function Status() {
+  const { checkprinter: promisePrinter } =
+    useLoaderData<typeof loader>();
 
-export function ErrorBoundary({ error }: { error: Error }) {
-	console.error(error);
-	return <div>Opa, deu ruim. </div>;
+  return (
+    <main>
+    <div className="relative lg:max-w-sm">
+      {/*<div  className=" p-2.5 text-gray-500 bg-white border rounded-md*/}
+			{/*shadow-sm outline-none appearance-none focus:border-indigo-600">*/}
+      {/*  <abbr title={data.setting.address}>Nome: {data.setting.name} </abbr>*/}
+      {/*  { data.printerOnline ? <div>ONLINE</div> : <div>OFFLINE</div>}*/}
+      {/*</div>*/}
+      <Suspense fallback={<p>Buscando Impressora</p>}>
+        <Await resolve={promisePrinter}>
+          {(checkprinter) => (
+            <ul>
+              {checkprinter.message}
+            </ul>
+          )}
+        </Await>
+      </Suspense>
+    </div>
+    </main>
+  )
 }
