@@ -60,7 +60,7 @@ export async function getConfigPrinter(userId: User["id"]) {
     .single();
   console.log("configuração da impressora" + JSON.stringify(data));
   if (!error) {
-    return {
+    return <Setting>{
       id: data.id,
       name: data.name,
       address: data.address,

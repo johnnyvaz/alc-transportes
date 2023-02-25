@@ -1,5 +1,6 @@
 import type { User } from "./user.server";
 import { supabase } from "./user.server";
+import { Setting } from "~/models/settings.server";
 
 export type Route = {
   id: string;
@@ -16,8 +17,14 @@ export type Route = {
 export type LoaderData = {
   routeListItems: Route[];
   routePrintedListItems: Route[];
-  routeSelected: Route;
+  setting: Setting;
+  printerOnline: string;
 };
+
+export type PrinterOnline = {
+  message: string,
+  status: boolean
+}
 
 export async function getRouteListItems({ userId }: { userId: User["id"] }) {
   const { data } = await supabase
@@ -53,7 +60,6 @@ export async function createRoute({
 }
 
 export async function getRoute(orderid? : Route["orderid"], userId?: User["id"]) {
-  console.log("orderid 333" + orderid);
   const { data, error } = await supabase
     .from("routes")
     .select("*")
@@ -62,13 +68,28 @@ export async function getRoute(orderid? : Route["orderid"], userId?: User["id"])
     .single();
 
   if (!error) {
-    return {
+    return <Route>{
       userId: data.profile_id,
       id: data.id,
       orderid: data.orderid,
       route: data.route,
       stop: data.stop,
       printed: data.printed
+    };
+  }
+  return null;
+}
+
+export async function setRoutePrinted(Id? : Route["id"]) {
+
+  const { data, error } = await supabase
+    .from("routes")
+    .update({ printed : 'true'})
+    .match({id : Id});
+
+  if (!error) {
+    return {
+      data
     };
   }
   return null;
