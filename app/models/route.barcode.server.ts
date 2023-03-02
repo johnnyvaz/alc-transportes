@@ -1,30 +1,7 @@
 import type { User } from "./user.server";
 import { supabase } from "./user.server";
-import { Setting } from "~/models/settings.server";
+import { Route } from "~/types";
 
-export type Route = {
-  id: string;
-  orderid: string;
-  route: number;
-  stop: number;
-  printed: boolean;
-  datePrinted: string;
-  dateCreated: string;
-  profile_id: string;
-};
-
-
-export type LoaderData = {
-  routeListItems: Route[];
-  routePrintedListItems: Route[];
-  setting: Setting;
-  printerOnline: string;
-};
-
-export type PrinterOnline = {
-  message: string,
-  status: boolean
-}
 
 export async function getRouteListItems({ userId }: { userId: User["id"] }) {
   const { data } = await supabase
@@ -72,9 +49,12 @@ export async function getRoute(orderid? : Route["orderid"], userId?: User["id"])
       userId: data.profile_id,
       id: data.id,
       orderid: data.orderid,
-      route: data.route,
+      route: data.route.toString(),
       stop: data.stop,
-      printed: data.printed
+      printed: data.printed,
+      datePrinted: data.datePrinted,
+      dateCreated: data.dateCreated,
+      profile_id: data.profile_id
     };
   }
   return null;

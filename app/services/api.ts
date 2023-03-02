@@ -11,21 +11,8 @@ const headers = {
   "ngrok-skip-browser-warning": "cod2d",
   "Content-Type": "application/json",
 };
-export async function getPrinter(host?: string) {
-  invariant(host, "Selecione um host válido");
-  const { printer, error } = await fetch(`https://${host}:5010/api/printers`,
-    { method: "get", headers: headers }
-  ).then((res) => res.json()
-  );
-  console.log(JSON.stringify(printer));
-  if (!error) {
-    return printer;
-  }
-  return null;
-}
 
 export async function postPrinter(host?: string | undefined, name?: string | undefined, route?: Route | null) {
-
   const postApiPrinter = {
     tagContent: {
       route: route?.route,
@@ -34,7 +21,7 @@ export async function postPrinter(host?: string | undefined, name?: string | und
     },
     printerIdentifier: name
   }
-  const { response, error } = await fetch(`https://${host}:5010/api/printer/routes/`,
+  const { response, error } = await fetch(`https://${host}/api/printer/routes/`,
     {
       method: "post",
       body: JSON.stringify(postApiPrinter),
@@ -42,7 +29,6 @@ export async function postPrinter(host?: string | undefined, name?: string | und
     }
     ).then((res) => res.json());
   if (!error) {
-  console.log("response postPrinter" + JSON.stringify(response));
     return response;
   }
   return null;
@@ -54,9 +40,9 @@ function delay(ms: number) {
 
 export async function getPrinterSelected(host?: string, name?: string) {
   invariant(host, "Selecione um host válido");
-  const printResponse = await fetch(`${host}:5010/api/printers/${name}`,
+  const printResponse = await fetch(`https://${host}/api/printers/${name}`,
     { method: "get", headers: headers }
-  ).then((res) => { delay(15000);
+  ).then((res) => {
     if (res.ok) {
       console.log("printResponse" + printResponse)
       return true
@@ -68,4 +54,18 @@ export async function getPrinterSelected(host?: string, name?: string) {
       console.log('Erro com o fetch operation: ' + error.message);
       return false
     });
+}
+
+export async function getPrinter(host?: string) {
+  invariant(host, "Selecione um host válido");
+  const { response, error } = await fetch(`https://${host}/api/printers/`,
+    {
+      method: "get",
+      headers: headers
+    }
+  ).then((res) => res.json());
+  if (!error) {
+    return response;
+  }
+  return null;
 }

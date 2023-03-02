@@ -16,3 +16,32 @@ export type FileProps = {
   type: string;
   name: string
 }
+
+export type Setting = {
+  id: string;
+  name: string;
+  address: string;
+  default: boolean;
+  profile_id: string;
+};
+
+export type Route = {
+  id: String;
+  orderid: String;
+  route: String;
+  stop: String;
+  printed: boolean;
+  datePrinted: string;
+  dateCreated: string;
+  profile_id: string;
+};
+
+
+export type LoaderData = {
+  routeListItems: Route[];
+  routePrintedListItems: Route[];
+  setting: Setting;
+  getPrinter: string
+  route: Route;
+
+};

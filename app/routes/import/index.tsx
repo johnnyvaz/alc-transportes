@@ -8,7 +8,6 @@ import {
   unstable_parseMultipartFormData as parseMultipartFormData,
 } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
-import { FileProps } from "~/types";
 import { useState } from "react";
 
 export const action = async ({ request }: ActionArgs) => {
