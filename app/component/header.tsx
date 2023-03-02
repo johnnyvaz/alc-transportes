@@ -10,7 +10,10 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between bg-slate-800 p-4 text-white">
       <div className="text-2xl ">
-        <Link to="/settings">Config. Impressora</Link>
+        <Link to="/readbarcode">Ler QR Code</Link>
+      </div>
+      <div className="text-2xl ">
+        <Link to="/import">Importar Dados</Link>
       </div>
       <p>usuário logado: {user.email}</p>
       <Form action="/logout" method="post">
