@@ -19,13 +19,34 @@ export default function PrinterSelected() {
           <tr className="bg-gray-800 text-white">
             <th className="px-4 py-2">Nome</th>
             <th className="px-4 py-2">Host</th>
-            {/*<th className="px-4 py-2">Status</th>*/}
           </tr>
           </thead>
           <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
             <tr key={data.setting.id} className="bg-gray-100">
-              <td className="px-4 py-2 ">{data.setting.name}</td>
-              {/*<td className="px-4 py-2">Status: {data.getPrinter}</td>*/}
+              <td className="px-4 py-2 ">
+                <div
+                  className="text-xl p-1"
+                  onBlur={(e) => {
+                    const address = String(e.currentTarget.textContent).trim();
+                    if (address !== data.setting.name) {
+                      fetcher.submit(
+                        { name: String(e.target.textContent) },
+                        {
+                          action: `/readbarcode/${data.setting.name}/updatename`,
+                          method: "post",
+                        }
+                      );
+                    }
+                  }}
+                  contentEditable
+                  dangerouslySetInnerHTML={{
+                    __html: fetcher.submission
+                      ? (fetcher.submission.formData.get("name") as string)
+                      : data.setting.name,
+                  }}
+                />
+              </td>
+
               <td> <div
                 className="text-xl p-1"
                 onBlur={(e) => {
@@ -47,9 +68,6 @@ export default function PrinterSelected() {
                     : data.setting.address,
                 }}
               />
-                {/*<button className="border rounded shadow py-1 px-2" type="button">*/}
-                {/*  (pointless button to focus)*/}
-                {/*</button>*/}
               </td>
             </tr>
           </tbody>
