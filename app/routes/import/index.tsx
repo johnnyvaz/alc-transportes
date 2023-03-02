@@ -9,6 +9,7 @@ import {
 } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { useState } from "react";
+import Header from "~/component/header";
 
 export const action = async ({ request }: ActionArgs) => {
   const uploadHandler: UploadHandler = composeUploadHandlers(
@@ -56,6 +57,7 @@ export default function Index() {
   return (
     <main>
       <div className="container p-2">
+        <Header />
         <div className="bg-gray-800 text-white text-center justify-center resize p-4 rounded-t-lg
           uppercase">
           Importar Arquivo CSV
@@ -73,14 +75,14 @@ export default function Index() {
         </Form>
         </div>
         <div className="border border-gray-400 p-4">
-          {/*{data?.error ? <h2>{data.error}</h2> : null}*/}
+          {data?.error ? <h2>{data.error}</h2> : null}
 
-          {/*{data?.image ? (*/}
-          {/*  <>*/}
-          {/*    <h2>uploaded image</h2>*/}
-          {/*    <img alt="uploaded" src={data.imgSrc} />*/}
-          {/*  </>*/}
-          {/*) : null}*/}
+          {data?.image ? (
+            <>
+              <h2>uploaded image</h2>
+              <img alt="uploaded" src={data.imgSrc} />
+            </>
+          ) : null}
 
           <p>Arquivo: {nome}</p>
         </div>
