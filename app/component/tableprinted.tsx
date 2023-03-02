@@ -1,7 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
-import type { LoaderData } from "~/models/route.barcode.server";
 import type { loader } from "~/routes/readbarcode";
-
+import type { LoaderData } from "~/types";
 
 export default function TablePrinted() {
   const data = useLoaderData<typeof loader>() as LoaderData;

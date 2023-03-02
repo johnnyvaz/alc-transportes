@@ -1,22 +1,7 @@
 import type { User } from "./user.server";
 import { supabase } from "./user.server";
-
-export type Setting = {
-  id: string;
-  name: string;
-  address: string;
-  default: boolean;
-  profile_id: string;
-};
-
-export async function getSettingsListItems({ userId }: { userId: User["id"] }) {
-  const { data } = await supabase
-    .from("settings")
-    .select("id, name")
-    .eq("profile_id", userId);
-
-  return data;
-}
+import type { Setting } from "~/types";
+import { Route } from "~/types";
 
 export async function createConfigPrinter({
   name,
@@ -35,23 +20,18 @@ export async function createConfigPrinter({
   return null;
 }
 
-export async function deleteConfigPrinter({
-  id,
-  userId,
-}: Pick<Setting, "id"> & { userId: User["id"] }) {
-  const { error } = await supabase
+export async function updateConfigPrinter(userId?: string, address?: string) {
+  const { data, error } = await supabase
     .from("settings")
-    .delete({ returning: "minimal" })
-    .match({ id, profile_id: userId });
-
+    .update({ address : address} )
+    .match({ profile_id: userId, default: true })
   if (!error) {
-    return {};
+    return data;
   }
-
   return null;
 }
 
-export async function getConfigPrinter(userId: User["id"]) {
+export async function getConfigPrinter(userId?: User["id"]) {
   const { data, error } = await supabase
     .from("settings")
     .select("*")
@@ -64,6 +44,8 @@ export async function getConfigPrinter(userId: User["id"]) {
       id: data.id,
       name: data.name,
       address: data.address,
+      default: data.default,
+      profile_id: data.profile_id
     };
   }
 

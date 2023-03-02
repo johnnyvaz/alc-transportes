@@ -1,7 +1,7 @@
 import type { ActionArgs } from "@remix-run/node";
 import type { LoaderArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Outlet, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Outlet, useActionData } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 import TableToPrint from "~/component/tabletoprint";
 import TablePrinted from "~/component/tableprinted";
@@ -14,13 +14,11 @@ import {
   setRoutePrinted
 } from "~/models/route.barcode.server";
 import Header from "~/component/header";
-import { postPrinter } from "~/services/api";
-import { getConfigPrinter, Setting } from "~/models/settings.server";
+import { getPrinter, postPrinter } from "~/services/api";
+import type { Setting } from "~/models/settings.server";
+import { getConfigPrinter } from "~/models/settings.server";
+import PrinterSelected from "~/routes/readbarcode/printerselected";
 
-type LoaderData = {
-  route: Route;
-  setting: Setting
-}
 
 export const action = async ({ request }: ActionArgs) => {
   const userId = await requireUserId(request);
@@ -39,11 +37,10 @@ export async function loader({ request }: LoaderArgs) {
   const setting = await getConfigPrinter(userId);
   const routeListItems = await getRouteListItems({ userId });
   const routePrintedListItems = await getRoutePrintedListItems({ userId });
-  return json({ routeListItems, routePrintedListItems, setting });
+  return json({ routeListItems, routePrintedListItems, setting, getPrinter });
 }
 
 export default function ReadBarcode() {
-  const data = useLoaderData<LoaderData>();
   const actionMessage = useActionData<typeof action>();
   const orderidRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -144,8 +141,10 @@ return (
                   </label>
                 </div>
               </Form>
+
             </div>
           </div>
+          <PrinterSelected />
         </div>
         <div className="flex-1 w-auto">
           <TableToPrint />
