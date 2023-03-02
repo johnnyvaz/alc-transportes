@@ -19,7 +19,7 @@ export async function postPrinter(host?: string | undefined, name?: string | und
       stop: route?.stop,
       orderid: route?.orderid
     },
-    printerIdentifier: name
+    printerName: name
   }
   const { response, error } = await fetch(`https://${host}/api/printer/routes/`,
     {
