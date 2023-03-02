@@ -20,10 +20,21 @@ export async function createConfigPrinter({
   return null;
 }
 
-export async function updateConfigPrinter(userId?: string, address?: string) {
+export async function updateAddress(userId?: string, address?: string) {
   const { data, error } = await supabase
     .from("settings")
     .update({ address : address} )
+    .match({ profile_id: userId, default: true })
+  if (!error) {
+    return data;
+  }
+  return null;
+}
+
+export async function updateName(userId?: string, name?: string) {
+  const { data, error } = await supabase
+    .from("settings")
+    .update({ name : name} )
     .match({ profile_id: userId, default: true })
   if (!error) {
     return data;
