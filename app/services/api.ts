@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import type { Route } from "~/models/route.barcode.server";
+import type { Route } from "~/models/route.server";
 
 export type ResultPrinters = {
   printers: []

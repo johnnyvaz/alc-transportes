@@ -12,7 +12,7 @@ import {
   getRoutePrintedListItems,
   Route,
   setRoutePrinted
-} from "~/models/route.barcode.server";
+} from "~/models/route.server";
 import Header from "~/component/header";
 import { getPrinter, postPrinter } from "~/services/api";
 import type { Setting } from "~/models/settings.server";
@@ -46,9 +46,7 @@ export default function ReadBarcode() {
   useEffect(() => {
     if (actionMessage && orderidRef.current) {
       orderidRef.current.select();
-      setTimeout(() => {
         orderidRef.current.value = "";
-      }, 2000)
     }
 
   }, [actionMessage]);

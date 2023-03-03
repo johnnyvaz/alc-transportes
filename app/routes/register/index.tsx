@@ -1,47 +1,58 @@
+import { Form } from "@remix-run/react";
 import { useState } from "react";
 import Header from "~/component/header";
 import { Outlet } from "@remix-run/react";
+import { ActionFunction, json } from "@remix-run/node";
+import { requireUserId } from "~/session.server";
+
+
+export const action: ActionFunction = async ({ request }) => {
+  const userId = await requireUserId(request);
+
+  const formData = await request.formData();
+  const body = formData.get("body");
+
+  if (typeof body !== "string" || body.length === 0) {
+    return json({ errors: { body: "Body is required" } }, { status: 400 });
+  }
+  const lines = body.split('\n')
+  lines.forEach(line => {
+    const columns = line.split(';');
+    const dataRoute = {
+      orderid: columns[0],
+      route: columns[1],
+      stop: columns[2]
+    }
+    console.log("dataroutes :" + dataRoute)
+    // const routes = await createRoute({ title, body, userId });
+  })
+
+  return json({lines: lines})
+
+};
+
 
 export default function ImportCsv() {
   const [csv, setCsv] = useState();
   const [clientejson, setClientejson] = useState([]);
 
-  function formatarCliente(clientejson: any) {
-    setClientejson(clientejson);
-    console.log("clientejson", clientejson);
-  }
+  // function renderizarDados() {
+  //   return clientejson?.map((cliente, i) => {
+  //     return (
+  //       <tr
+  //         key={cliente.id}
+  //         className={`${
+  //           i % 2 === 0 ? "bg-gray-900" : "bg-gray-700"
+  //         } rounded-xl border-2 border-gray-500`}
+  //       >
+  //         <td className="p-2 text-left">{cliente.nome}</td>
+  //         <td className="p-2 text-left">{cliente.apelido}</td>
+  //       </tr>
+  //     );
+  //   });
+  // }
 
-  function renderizarCabecalho() {
-    return (
-      <tr className="resize:none rounded-lg border-2 border-gray-500 ">
-        <th className="p-2 text-left">Pedido</th>
-        <th className="p-2 text-left">Rota</th>
-        <th className="p-2 text-left">Parada</th>
-      </tr>
-    );
-  }
 
-  const totalAImportar = clientejson.length;
-
-  function renderizarDados() {
-    return clientejson?.map((cliente, i) => {
-      return (
-        <tr
-          key={cliente.id}
-          className={`${
-            i % 2 === 0 ? "bg-gray-900" : "bg-gray-700"
-          } rounded-xl border-2 border-gray-500`}
-        >
-          <td className="p-2 text-left">{cliente.nome}</td>
-          <td className="p-2 text-left">{cliente.apelido}</td>
-        </tr>
-      );
-    });
-  }
-
-  const handleAlterarCsv = () => {
-    setCsv(null);
-  };
 
   const handleReadString = () => {
     let lines = csv.split("\n");
@@ -79,42 +90,36 @@ export default function ImportCsv() {
                   </h1>
                 </div>
                 <div>
-                  <table className="w-80 bg-gray-200">
-                    <thead
-                      className={`border-coolGray-800 shadow-input resize:none rounded-lg border
-                      font-normal text-gray-800 outline-none focus:border-green-500`}
-                    >
-                      {renderizarCabecalho()}
-                    </thead>
-                    <tbody>{renderizarDados()}</tbody>
-                  </table>
+                  <Form
+                    method="post"
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 8,
+                      width: "100%",
+                    }}
+                  >
+                    <div>
+                      <label className="flex w-full flex-col gap-1">
+                        <span>pedido;rota;parada</span>
+                        <textarea
+                          name="body"
+                          rows={8}
+                          className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6"
+                        ></textarea>
+                      </label>
+                    </div>
 
-                  <div>
-                    {/*<textarea*/}
-                    {/*  className="block w-full h-64 p-2 text-base text-coolGray-900*/}
-                    {/*        font-normal outline-none focus:border-green-500 border border-coolGray-200*/}
-                    {/*        rounded-lg shadow-input text-gray-800"*/}
-                    {/*  id="input"*/}
-                    {/*  placeholder="apelido;nome"*/}
-                    {/*  value={csv}>*/}
-                    {/*    </textarea>*/}
-                    <div className="mt-7 flex justify-end">
+                    <div className="text-right">
                       <button
-                        className="btn hover:text-coolGray-500 shadow-button mb-6 flex w-full flex-wrap justify-center
-                        rounded-md border px-4 py-2"
-                        onClick={(_) => handleAlterarCsv()}
+                        type="submit"
+                        className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
                       >
-                        Validar registros
+                        Salvar
                       </button>
                     </div>
-                  </div>
-                  <button
-                    className="btn hover:text-coolGray-500 shadow-button m-4 mb-6 flex w-full flex-wrap
-                justify-center rounded-md border py-2"
-                    onClick={(_) => {}}
-                  >
-                    Clique aqui para importar {totalAImportar} arquivos
-                  </button>
+                  </Form>
+
                 </div>
               </div>
             </div>
