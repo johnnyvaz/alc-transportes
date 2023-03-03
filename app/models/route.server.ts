@@ -21,9 +21,10 @@ export async function getRoutePrintedListItems({ userId }: { userId: User["id"] 
   return data;
 }
 
-export async function createRoute({
-  orderid, route, stop, userId,
-}: Pick<Route, "orderid" | "route" | "stop"> & { userId: User["id"] }) {
+export async function createRoute(orderid? : Route["orderid"],
+                                  route? : Route["route"],
+                                  stop? : Route["stop"],
+                                  userId? : User["id"]) {
   const { data, error } = await supabase
     .from("routes")
     .insert([{ orderid, route, stop, profile_id: userId, printed: false }])
