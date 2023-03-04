@@ -2,8 +2,10 @@ import { Form } from "@remix-run/react";
 import { useState } from "react";
 import Header from "~/component/header";
 import { Outlet } from "@remix-run/react";
-import { ActionFunction, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { ActionFunction } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
+import { createRoute } from "~/models/route.server";
 
 
 export const action: ActionFunction = async ({ request }) => {
@@ -21,9 +23,10 @@ export const action: ActionFunction = async ({ request }) => {
     const dataRoute = {
       orderid: columns[0],
       route: columns[1],
-      stop: columns[2]
+      stop: columns[2],
     }
-    console.log("dataroutes :" + dataRoute)
+    const create = createRoute(dataRoute.orderid, dataRoute.route, dataRoute.stop, userId)
+    console.log("dataroutes :" + create)
     // const routes = await createRoute({ title, body, userId });
   })
 
