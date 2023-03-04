@@ -93,6 +93,7 @@ export default function ImportCsv() {
                         ></textarea>
                       </label>
                     </div>
+                    <div className="text-white text-1xl text-center">Quantidade máxima = 500 linhas</div>
                     <div className="text-right">
                       <button
                         type="submit"
