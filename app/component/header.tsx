@@ -13,7 +13,7 @@ export default function Header() {
         <Link to="/readbarcode">Ler QR Code</Link>
       </div>
       <div className="text-2xl ">
-        <Link to="/import">Importar Dados</Link>
+        <Link to="/register">Importar Dados</Link>
       </div>
       <p>usuário logado: {user.email}</p>
       <Form action="/logout" method="post">

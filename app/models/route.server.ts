@@ -43,6 +43,8 @@ export async function getRoute(orderid? : Route["orderid"], userId?: User["id"])
     .select("*")
     .eq("profile_id", userId)
     .eq("orderid", orderid)
+    .eq("printed", false)
+    .order('id', {ascending: false})
     .single();
 
   if (!error) {

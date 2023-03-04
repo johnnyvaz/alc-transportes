@@ -17,7 +17,7 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 
 export const meta: MetaFunction = () => {
-  return { title: "Cod2d Transportadoras" };
+  return { title: "Cod2d Rotas" };
 };
 
 export const links: LinksFunction = () => {
@@ -39,7 +39,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="h-full">
+      <body className="h-full bg-gray-600">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

@@ -53,15 +53,10 @@ export default function ReadBarcode() {
 
 return (
   <main>
-    <div className="flex h-full min-h-screen flex-col">
       <Header />
-      <div className="flex">
-        <div className="flex-1 w-auto">
-          <div className="container p-2">
-
-            <div className="bg-gray-800 p-8 rounded-lg ">
-              <div
-                className="bg-gradient-to-r from-purple-500 to-blue-500 text-center text-white py-2 rounded-t-lg mb-4">
+          <div className="grid grid-cols-3">
+            <div className="container p-2">
+              <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-center text-white py-2 rounded-t-lg mb-2">
                 <h1 className="text-2xl font-medium">Leitura de Código de Barras</h1>
               </div>
               <Form
@@ -74,7 +69,7 @@ return (
                 }}
               >
                 <div>
-                  <label className="flex w-full flex-col gap-1">
+                  <label className="flex w-full flex-col gap-1 border-r-2 border-b-2 border-l-2 border-gray-800">
                     <span className="text-center text-white">Código do Pedido</span>
                     <input
                       type="text"
@@ -82,21 +77,21 @@ return (
                       ref={orderidRef}
                       className="flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose"
                     />
+                    <div className="text-right">
+                      <button
+                        type="submit"
+                        className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
+                        Imprimir
+                      </button>
+                    </div>
                   </label>
+
                 </div>
-                <div className="text-right">
-                  <button
-                    type="submit"
-                    className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400">
-                    Imprimir
-                  </button>
-                </div>
+
                 <br/>
                 <div>
-                  <label className="flex w-full flex-col gap-1">
-                      <h3 className="text-2xl font-medium text-white text-center">Etiqueta enviada para impressão</h3>
+                    <h3 className="text-2xl font-medium text-white text-center">Etiqueta enviada para impressão</h3>
                     {actionMessage ? (
-                      <div className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6">
                         <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
                           <thead>
                           <tr className="bg-gray-800 text-white w-full flex-2">
@@ -106,17 +101,14 @@ return (
                           </tr>
                           </thead>
                           <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
-                            <tr key={actionMessage.id}>
-                              <td className="px-4 py-2">{actionMessage.orderid}</td>
-                              <td className="px-4 py-2">{actionMessage.route}</td>
-                              <td className="px-4 py-2">{actionMessage.stop}</td>
-                            </tr>
+                          <tr key={actionMessage.id}>
+                            <td className="px-4 py-2">{actionMessage.orderid}</td>
+                            <td className="px-4 py-2">{actionMessage.route}</td>
+                            <td className="px-4 py-2">{actionMessage.stop}</td>
+                          </tr>
                           </tbody>
                         </table>
-                      </div>
                     ) : (
-                      <div className="w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6">
-
                         <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
                           <thead>
                           <tr className="bg-gray-800 text-white w-full flex-2">
@@ -133,23 +125,18 @@ return (
                           </tr>
                           </tbody>
                         </table>
-                      </div>
                     )
                     }
-                  </label>
+
                 </div>
               </Form>
-
+              <PrinterSelected />
             </div>
+            <div >  <TableToPrint /></div>
+            <div ><TablePrinted /></div>
           </div>
-          <PrinterSelected />
-        </div>
-        <div className="flex-1 w-auto">
-          <TableToPrint />
-          <TablePrinted />
-        </div>
-      </div>
-    </div>
+
+
     <Outlet />
   </main>
 );

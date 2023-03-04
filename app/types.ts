@@ -28,7 +28,7 @@ export type Setting = {
 export type Route = {
   id: String;
   orderid: String;
-  route: String;
+  route: Number;
   stop: String;
   printed: boolean;
   datePrinted: string;
