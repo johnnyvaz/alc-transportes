@@ -8,10 +8,10 @@ export default function PrinterSelected() {
 
   return (
     <main>
-      <div className="container p-2">
-        <div className="bg-gray-800 text-white text-center justify-center resize p-4 rounded-t-lg
+      <div className="">
+        <div className="bg-gray-800 text-white text-center justify-center resize
           uppercase">
-          Impressora
+          Configuração da Impressora
         </div>
         <div className="border border-gray-400"></div>
         <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
@@ -47,27 +47,29 @@ export default function PrinterSelected() {
                 />
               </td>
 
-              <td> <div
-                className="text-xl p-1"
-                onBlur={(e) => {
-                  const address = String(e.currentTarget.textContent).trim();
-                  if (address !== data.setting.address) {
-                    fetcher.submit(
-                      { address: String(e.target.textContent) },
-                      {
-                        action: `/readbarcode/${data.setting.address}/update`,
-                        method: "post",
-                      }
-                    );
-                  }
-                }}
-                contentEditable
-                dangerouslySetInnerHTML={{
-                  __html: fetcher.submission
-                    ? (fetcher.submission.formData.get("address") as string)
-                    : data.setting.address,
-                }}
-              />
+              <td>
+                <div
+                  className="text-xl p-1"
+                  onBlur={(e) => {
+                    const address = String(e.currentTarget.textContent).trim();
+                    if (address !== data.setting.address && address !== "") {
+                      fetcher.submit(
+                        { address: address },
+                        {
+                          action: `/readbarcode/${data.setting.address}/update`,
+                          method: "post",
+                        }
+                      );
+                    }
+                    e.currentTarget.textContent = data.setting.address;
+                  }}
+                  contentEditable
+                  dangerouslySetInnerHTML={{
+                    __html: fetcher.submission
+                      ? (fetcher.submission.formData.get("address") as string)
+                      : data.setting.address ,
+                  }}
+                />
               </td>
             </tr>
           </tbody>

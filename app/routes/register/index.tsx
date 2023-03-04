@@ -1,11 +1,11 @@
-import { Form } from "@remix-run/react";
-import { useState } from "react";
+import { Form, useActionData } from "@remix-run/react";
 import Header from "~/component/header";
 import { Outlet } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import type { ActionFunction } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
 import { createRoute } from "~/models/route.server";
+import { useEffect, useRef, useState } from "react";
 
 
 export const action: ActionFunction = async ({ request }) => {
@@ -15,69 +15,49 @@ export const action: ActionFunction = async ({ request }) => {
   const body = formData.get("body");
 
   if (typeof body !== "string" || body.length === 0) {
-    return json({ errors: { body: "Body is required" } }, { status: 400 });
+    return json({ errors: { body: "O campo Body é obrigatório" } }, { status: 400 });
   }
+
   const lines = body.split('\n')
+  let routeInserted = 0
   lines.forEach(line => {
     const columns = line.split(';');
-    const dataRoute = {
-      orderid: columns[0],
-      route: columns[1],
-      stop: columns[2],
+    const orderid = columns[0]
+    const route = parseInt(columns[1])
+    const stop = columns[2]
+    if (!orderid || !route || isNaN(route)) {
+      return json({ errors: { dataRoute: "Os dados da rota estão incompletos ou inválidos" } }, { status: 400 });
     }
-    const create = createRoute(dataRoute.orderid, dataRoute.route, dataRoute.stop, userId)
-    console.log("dataroutes :" + create)
-    // const routes = await createRoute({ title, body, userId });
+
+    const dataRoute = {
+      orderid,
+      route,
+      stop,
+    }
+    createRoute(dataRoute.orderid, dataRoute.route, dataRoute.stop, userId)
+    routeInserted = routeInserted +1
   })
 
-  return json({lines: lines})
-
+  return redirect("/readbarcode")
 };
 
 
 export default function ImportCsv() {
-  const [csv, setCsv] = useState();
-  const [clientejson, setClientejson] = useState([]);
+  const [showAlert, setShowAlert] = useState(false);
+  const actionMessage = useActionData<typeof action>();
+  const bodyRef = useRef<HTMLInputElement>(null);
 
-  // function renderizarDados() {
-  //   return clientejson?.map((cliente, i) => {
-  //     return (
-  //       <tr
-  //         key={cliente.id}
-  //         className={`${
-  //           i % 2 === 0 ? "bg-gray-900" : "bg-gray-700"
-  //         } rounded-xl border-2 border-gray-500`}
-  //       >
-  //         <td className="p-2 text-left">{cliente.nome}</td>
-  //         <td className="p-2 text-left">{cliente.apelido}</td>
-  //       </tr>
-  //     );
-  //   });
-  // }
-
-
-
-  const handleReadString = () => {
-    let lines = csv.split("\n");
-    let result = [];
-    let headers = ["nome", "apelido"];
-    let headersInput = lines[0].split(";");
-    headers.forEach((e, i) => {
-      if (e != headersInput[i]) {
-        console.log("true");
-        alert("Ajuste o arquivo");
-      }
-    });
-    for (var i = 1; i < lines.length; i++) {
-      var cliente = {};
-      var currentline = lines[i].split(";");
-      for (var j = 0; j < headers.length; j++) {
-        cliente[headers[j]] = currentline[j];
-      }
-      result.push(cliente);
-    }
-    formatarCliente(result);
+  const handleShowAlert = () => {
+    setShowAlert(true);
   };
+
+  useEffect(() => {
+    if (actionMessage && bodyRef.current ) {
+      bodyRef.current.value = ""
+      handleShowAlert();
+    }
+  }, [actionMessage]);
+
 
   return (
     <main>
@@ -104,7 +84,8 @@ export default function ImportCsv() {
                   >
                     <div>
                       <label className="flex w-full flex-col gap-1">
-                        <span>pedido;rota;parada</span>
+                        <div className="text-white text-1xl text-center">Pedido;Rota;Parada</div>
+                        <div className="text-white text-1xl text-center">Importar nesse formato: texto;número;texto</div>
                         <textarea
                           name="body"
                           rows={8}
@@ -112,7 +93,6 @@ export default function ImportCsv() {
                         ></textarea>
                       </label>
                     </div>
-
                     <div className="text-right">
                       <button
                         type="submit"
