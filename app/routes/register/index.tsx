@@ -71,7 +71,6 @@ export default function ImportCsv() {
 
   return (
     <main>
-      <div className="flex h-full min-h-screen flex-col">
         <Header />
         <div className="flex">
           <div className="w-auto flex-1">
@@ -119,8 +118,6 @@ export default function ImportCsv() {
           </div>
           <div className="w-auto flex-1"></div>
         </div>
-      </div>
-      <Outlet />
     </main>
   );
 }

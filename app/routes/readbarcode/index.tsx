@@ -54,10 +54,13 @@ export default function ReadBarcode() {
   return (
     <main>
       <Header />
+      <div className="flex">
       <div className="grid grid-cols-3">
         <div className="container p-2">
+          <div className="rounded-lg bg-gray-800 p-2">
           <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-center text-white py-2 rounded-t-lg mb-2">
-            <h1 className="text-2xl font-medium">Leitura de Código de Barras</h1>
+            <h1 className="text-2xl font-medium">
+              Leitura de Código de Barras</h1>
           </div>
           <Form
             method="post"
@@ -85,9 +88,7 @@ export default function ReadBarcode() {
                   </button>
                 </div>
               </label>
-
             </div>
-
             <br />
             <div>
               <h3 className="text-2xl font-medium text-white text-center">Etiqueta enviada para impressão</h3>
@@ -100,7 +101,7 @@ export default function ReadBarcode() {
                     <th className="px-4 py-2">Parada</th>
                   </tr>
                   </thead>
-                  <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
+                  <tbody>
                   <tr key={actionMessage.id}>
                     <td className="px-4 py-2">{actionMessage.orderid}</td>
                     <td className="px-4 py-2">{actionMessage.route}</td>
@@ -117,7 +118,7 @@ export default function ReadBarcode() {
                     <th className="px-4 py-2">Parada</th>
                   </tr>
                   </thead>
-                  <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
+                  <tbody>
                   <tr key="">
                     <td className="px-4 py-2">-</td>
                     <td className="px-4 py-2">-</td>
@@ -132,8 +133,10 @@ export default function ReadBarcode() {
           </Form>
           <PrinterSelected />
         </div>
+        </div>
         <div><TableToPrint /></div>
         <div><TablePrinted /></div>
+      </div>
       </div>
       <Outlet />
     </main>
