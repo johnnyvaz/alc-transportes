@@ -15,48 +15,50 @@ export default function TablePrinted() {
   return (
     <main>
       <div className="container p-2">
-        <div className="bg-gradient-to-r from-purple-900 to-blue-800 text-center text-white py-2 rounded-t-lg">
-          <h1 className="text-2xl font-medium">Etiquetas impressas</h1>
-        </div>
-        <div className="border border-gray-400"></div>
-        <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
-          <thead>
-          <tr className="bg-gray-800 text-white">
-            <th className="px-4 py-2">Pedido</th>
-            <th className="px-4 py-2">Rota</th>
-            <th className="px-4 py-2">Parada</th>
-          </tr>
-          </thead>
-          <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
-          {data.routePrintedListItems.slice(indexOfFirstRow, indexOfLastRow).map((row, index) => (
-            <tr key={index} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-              <td className="px-4 py-2">{row.orderid}</td>
-              <td className="px-4 py-2">{row.route}</td>
-              <td className="px-4 py-2">{row.stop}</td>
-            </tr>
-          ))}
-          </tbody>
-        </table>
-        <div className="flex justify-center border-r-2 border-b-2 border-l-2 border-gray-800">
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-l"
-          >
-            Anterior
-          </button>
-          <div className="flex items-center mx-2">
-            <span className="mr-2">{`Mostrando ${indexOfFirstRow + 1}-${Math.min(indexOfLastRow, totalRows)} de ${totalRows} registros`}</span>
+        <div className="rounded-lg bg-gray-800 p-2">
+          <div className="mb-4 rounded-t-lg bg-gradient-to-r from-purple-500 to-blue-500 py-2 text-center text-white">
+            <h1 className="text-2xl font-medium">Etiquetas impressas</h1>
           </div>
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-r"
-          >
-            Próxima
-          </button>
+          <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
+            <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="px-4 py-2">Pedido</th>
+              <th className="px-4 py-2">Rota</th>
+              <th className="px-4 py-2">Parada</th>
+            </tr>
+            </thead>
+            <tbody>
+            {data.routePrintedListItems.slice(indexOfFirstRow, indexOfLastRow).map((row, index) => (
+              <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                <td className="px-4 py-2">{row.orderid}</td>
+                <td className="px-4 py-2">{row.route}</td>
+                <td className="px-4 py-2">{row.stop}</td>
+              </tr>
+            ))}
+            </tbody>
+          </table>
+          <div className="flex justify-center">
+            <button
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 rounded-b-lg"
+            >
+              Anterior
+            </button>
+            <div className="flex items-center mx-2">
+              <span
+                className="mr-2">{`Mostrando ${indexOfFirstRow + 1}-${Math.min(indexOfLastRow, totalRows)} de ${totalRows} registros`}</span>
+            </div>
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 rounded-b-lg"
+            >
+              Próxima
+            </button>
+          </div>
         </div>
       </div>
     </main>
-  )
+  );
 }

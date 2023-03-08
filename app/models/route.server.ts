@@ -1,6 +1,6 @@
 import type { User } from "./user.server";
 import { supabase } from "./user.server";
-import { Route } from "~/types";
+import type { Route } from "~/types";
 
 
 export async function getRouteListItems({ userId }: { userId: User["id"] }) {
@@ -8,7 +8,9 @@ export async function getRouteListItems({ userId }: { userId: User["id"] }) {
     .from("routes")
     .select("id, orderid, route, stop, printed")
     .eq("profile_id", userId)
-    .eq("printed", false);
+    .eq("printed", false)
+    .eq("concluded", false);
+
   return data;
 }
 
@@ -17,7 +19,8 @@ export async function getRoutePrintedListItems({ userId }: { userId: User["id"] 
     .from("routes")
     .select("id, orderid, route, stop, printed")
     .eq("profile_id", userId)
-    .eq("printed", true);
+    .eq("printed", true)
+    .eq("concluded", false);
   return data;
 }
 
@@ -33,8 +36,20 @@ export async function createRoute(orderid? : Route["orderid"],
   if (!error) {
     return data;
   }
-
   return null;
+}
+
+export async function createRouteBatch(routeBatch) {
+  console.log("routeBatch" + JSON.stringify(routeBatch))
+  const { data, error } = await supabase
+    .from("routes")
+    .insert(routeBatch);
+
+  if (!error) {
+    return data;
+  }
+  console.log("Erro database" + JSON.stringify(error.message))
+  return error;
 }
 
 export async function getRoute(orderid? : Route["orderid"], userId?: User["id"]) {
@@ -44,7 +59,7 @@ export async function getRoute(orderid? : Route["orderid"], userId?: User["id"])
     .eq("profile_id", userId)
     .eq("orderid", orderid)
     .eq("printed", false)
-    .order('id', {ascending: false})
+    .eq("concluded", false)
     .single();
 
   if (!error) {
@@ -64,12 +79,25 @@ export async function getRoute(orderid? : Route["orderid"], userId?: User["id"])
 }
 
 export async function setRoutePrinted(Id? : Route["id"]) {
-
   const { data, error } = await supabase
     .from("routes")
     .update({ printed : 'true'})
-    .match({id : Id});
+    .eq("id", Id);
+  if (!error) {
+    return {
+      data
+    };
+  }
+  return null;
+}
 
+export async function setConcluded(userId?: User["id"]) {
+  const { data, error } = await supabase
+    .from("routes")
+    .update({ concluded : 'true'})
+    .eq( "concluded", false)
+    .eq("profile_id", userId)
+  ;
   if (!error) {
     return {
       data

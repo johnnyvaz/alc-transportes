@@ -9,11 +9,8 @@ export default function PrinterSelected() {
   return (
     <main>
       <div className="">
-        <div className="bg-gray-800 text-white text-center justify-center resize
-          uppercase">
-          Configuração da Impressora
-        </div>
-        <div className="border border-gray-400"></div>
+        <br/>
+        <h3 className="text-2xl font-medium text-white text-center">Configuração da Impressora</h3>
         <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
           <thead>
           <tr className="bg-gray-800 text-white">
@@ -21,7 +18,7 @@ export default function PrinterSelected() {
             <th className="px-4 py-2">Host</th>
           </tr>
           </thead>
-          <tbody className="border-r-2 border-b-2 border-l-2 border-gray-800">
+          <tbody>
             <tr key={data.setting.id} className="bg-gray-100">
               <td className="px-4 py-2 ">
                 <div

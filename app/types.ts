@@ -34,6 +34,7 @@ export type Route = {
   datePrinted: string;
   dateCreated: string;
   profile_id: string;
+  concluded: boolean;
 };
 
 
