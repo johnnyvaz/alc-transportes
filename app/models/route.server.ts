@@ -9,7 +9,8 @@ export async function getRouteListItems({ userId }: { userId: User["id"] }) {
     .select("id, orderid, route, stop, printed")
     .eq("profile_id", userId)
     .eq("printed", false)
-    .eq("concluded", false);
+    .eq("concluded", false)
+    .order("route")
 
   return data;
 }
@@ -20,7 +21,8 @@ export async function getRoutePrintedListItems({ userId }: { userId: User["id"] 
     .select("id, orderid, route, stop, printed")
     .eq("profile_id", userId)
     .eq("printed", true)
-    .eq("concluded", false);
+    .eq("concluded", false)
+    .order("date_printed", { ascending: false });
   return data;
 }
 
@@ -79,9 +81,10 @@ export async function getRoute(orderid? : Route["orderid"], userId?: User["id"])
 }
 
 export async function setRoutePrinted(Id? : Route["id"]) {
+  const dataprinted = new Date();
   const { data, error } = await supabase
     .from("routes")
-    .update({ printed : 'true'})
+    .update({ printed : 'true', date_printed: dataprinted})
     .eq("id", Id);
   if (!error) {
     return {
