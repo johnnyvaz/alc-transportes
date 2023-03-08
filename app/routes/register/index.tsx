@@ -1,25 +1,27 @@
-import { Form, useActionData } from "@remix-run/react";
+import { Form, useActionData, useCatch } from "@remix-run/react";
 import Header from "~/component/header";
 import { Outlet } from "@remix-run/react";
 import { json, redirect } from "@remix-run/node";
 import type { ActionFunction } from "@remix-run/node";
 import { requireUserId } from "~/session.server";
-import { createRoute } from "~/models/route.server";
+import { createRoute, createRouteBatch } from "~/models/route.server";
 import { useEffect, useRef, useState } from "react";
+
 
 
 export const action: ActionFunction = async ({ request }) => {
   const userId = await requireUserId(request);
-
+  const printed = false
   const formData = await request.formData();
   const body = formData.get("body");
-
   if (typeof body !== "string" || body.length === 0) {
     return json({ errors: { body: "O campo Body é obrigatório" } }, { status: 400 });
   }
-
   const lines = body.split('\n')
   let routeInserted = 0
+  const profile_id = userId;
+  let routeBatch = [] // array para armazenar os registros
+  const batchSize = 300 // tamanho do lote
   lines.forEach(line => {
     const columns = line.split(';');
     const orderid = columns[0]
@@ -28,16 +30,24 @@ export const action: ActionFunction = async ({ request }) => {
     if (!orderid || !route || isNaN(route)) {
       return json({ errors: { dataRoute: "Os dados da rota estão incompletos ou inválidos" } }, { status: 400 });
     }
-
     const dataRoute = {
       orderid,
       route,
       stop,
+      printed,
+      profile_id
     }
-    createRoute(dataRoute.orderid, dataRoute.route, dataRoute.stop, userId)
-    routeInserted = routeInserted +1
-  })
+    routeBatch.push(dataRoute) // adiciona o registro ao lote
+    routeInserted++
 
+    if (routeInserted % batchSize === 0) { // se o tamanho do lote for atingido, chama createRoute
+      createRouteBatch(routeBatch)
+      routeBatch = [] // limpa o array do lote
+    }
+  })
+  if (routeBatch.length > 0) { // chama createRoute com os registros restantes
+    await createRouteBatch(routeBatch)
+  }
   return redirect("/readbarcode")
 };
 
@@ -69,7 +79,7 @@ export default function ImportCsv() {
               <div className="rounded-lg bg-gray-800 p-8 ">
                 <div className="mb-4 rounded-t-lg bg-gradient-to-r from-purple-500 to-blue-500 py-2 text-center text-white">
                   <h1 className="text-2xl font-medium">
-                    Importar arquivo CSV
+                    Importar Dados
                   </h1>
                 </div>
                 <div>
@@ -103,7 +113,6 @@ export default function ImportCsv() {
                       </button>
                     </div>
                   </Form>
-
                 </div>
               </div>
             </div>
@@ -114,4 +123,21 @@ export default function ImportCsv() {
       <Outlet />
     </main>
   );
+}
+
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
+  return <div>An unexpected error occurred: {error.message}</div>;
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  if (caught.status === 404) {
+    return <div>Note not found</div>;
+  }
+
+  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }

@@ -15,6 +15,9 @@ export default function Header() {
       <div className="text-2xl ">
         <Link to="/register">Importar Dados</Link>
       </div>
+      <div className="text-2xl ">
+        <Link to="/concluded">Concluir</Link>
+      </div>
       <p>usuário logado: {user.email}</p>
       <Form action="/logout" method="post">
         <button

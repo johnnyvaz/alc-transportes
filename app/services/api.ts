@@ -34,10 +34,6 @@ export async function postPrinter(host?: string | undefined, name?: string | und
   return null;
 }
 
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export async function getPrinterSelected(host?: string, name?: string) {
   invariant(host, "Selecione um host válido");
   const printResponse = await fetch(`https://${host}/api/printers/${name}`,

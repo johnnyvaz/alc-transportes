@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useCatch, useLoaderData } from "@remix-run/react";
 import type { loader } from "~/routes/readbarcode";
 import type { LoaderData } from "~/types";
 import { useState } from "react";
@@ -18,7 +18,7 @@ export default function TableToPrint() {
     <main>
       <div className="container p-2">
         <div className="bg-gradient-to-r from-purple-900 to-blue-800 text-center text-white py-2 rounded-t-lg">
-          <h1 className="text-2xl font-medium">Etiquetas para imprimir</h1>
+          <h1 className="text-2xl font-medium">Etiquetas para imprimir - {totalRows}</h1>
         </div>
         <div className="border border-gray-400"></div>
         <table className="table-fixed text-center bg-white overflow-hidden w-full flex-1">
@@ -61,4 +61,21 @@ export default function TableToPrint() {
       </div>
     </main>
   )
+}
+
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
+
+  return <div>An unexpected error occurred: {error.message}</div>;
+}
+
+export function CatchBoundary() {
+  const caught = useCatch();
+
+  if (caught.status === 404) {
+    return <div>Note not found</div>;
+  }
+
+  throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
