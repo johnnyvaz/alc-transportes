@@ -47,7 +47,7 @@ export default function TableToPrint() {
             >
               Anterior
             </button>
-            <div className="flex items-center mx-2">
+            <div className="flex items-center mx-2 text-blue-50">
               <span
                 className="mr-2">{`Mostrando ${indexOfFirstRow + 1}-${Math.min(indexOfLastRow, totalRows)} de ${totalRows} registros`}</span>
             </div>
