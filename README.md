@@ -1,10 +1,7 @@
-# Remix K-pop Stack
+# Cod2d Rotas
 
-![k-pop site image](https://res.cloudinary.com/dzkoxrsdj/image/upload/v1648844684/CleanShot_2022-04-01_at_16.23.40_2x_oo3ppe.jpg)
+#link https://rotas.cod2d.com.br
 
-Deployed Site: [kpop-stack.netlify.app](https://kpop-stack.netlify.app)
-
-Learn more about [Remix Stacks](https://remix.run/stacks).
 
 ```
 npx create-remix --template netlify-templates/kpop-stack
